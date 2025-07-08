@@ -578,7 +578,7 @@ function initDonationForm() {
     const donateBtn = document.querySelector('.donate-submit-btn');
     const donateForm = document.getElementById('donateForm');
     
-    let selectedAmount = 100; // Default amount
+    let selectedAmount = 80; // Default amount
     
     // Amount button selection
     amountBtns.forEach(btn => {
@@ -619,7 +619,7 @@ function initDonationForm() {
     
     function updateDonateButtonText() {
         if (donateBtn) {
-            donateBtn.textContent = `💝 Donate $${selectedAmount}`;
+            donateBtn.textContent = `💝 Donate £${selectedAmount}`;
         }
     }
     
@@ -648,8 +648,8 @@ function initDonationForm() {
             setTimeout(() => {
                 // Show success message
                 const message = taxReceipt ? 
-                    `Thank you for your $${selectedAmount} donation! A tax receipt will be sent to ${email}.` :
-                    `Thank you for your $${selectedAmount} donation! Your support helps us bring more pets home safely.`;
+                    `Thank you for your £${selectedAmount} donation! A tax receipt will be sent to ${email}.` :
+                    `Thank you for your £${selectedAmount} donation! Your support helps us bring more pets home safely.`;
                 
                 showNotification(message, 'success');
                 
@@ -657,13 +657,13 @@ function initDonationForm() {
                 donateForm.reset();
                 
                 // Reset button
-                donateBtn.textContent = `💝 Donate $${selectedAmount}`;
+                donateBtn.textContent = `💝 Donate £${selectedAmount}`;
                 donateBtn.disabled = false;
                 
                 // Reset amount selection
                 amountBtns.forEach(btn => btn.classList.remove('active'));
-                document.querySelector('[data-amount="100"]').classList.add('active');
-                selectedAmount = 100;
+                document.querySelector('[data-amount="80"]').classList.add('active');
+                selectedAmount = 80;
                 updateDonateButtonText();
                 
             }, 2000);
