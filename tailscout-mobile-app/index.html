@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TailScout Mobile - Community Pet Search</title>
+    <meta name="description" content="Government-funded community drone project for finding lost pets. Report missing pets and help others find their beloved companions.">
+    <link rel="stylesheet" href="mobile-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4ecdc4">
+</head>
+<body>
+    <!-- Header -->
+    <header class="mobile-header">
+        <div class="header-content">
+            <div class="logo">
+                <img src="../logo3.png" alt="TailScout Logo" class="logo-image">
+                <div class="logo-text">
+                    <h1>TailScout</h1>
+                    <span class="gov-tag">Government-Funded Community Project</span>
+                </div>
+            </div>
+            <button class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Navigation Menu -->
+    <nav class="mobile-nav" id="mobileNav">
+        <a href="#home" class="nav-item active">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-text">Home</span>
+        </a>
+        <a href="#report" class="nav-item">
+            <span class="nav-icon">📋</span>
+            <span class="nav-text">Report Lost Pet</span>
+        </a>
+        <a href="#alerts" class="nav-item">
+            <span class="nav-icon">🔔</span>
+            <span class="nav-text">Local Alerts</span>
+        </a>
+        <a href="#spot" class="nav-item">
+            <span class="nav-icon">📍</span>
+            <span class="nav-text">Spot a Pet</span>
+        </a>
+        <a href="#donate" class="nav-item">
+            <span class="nav-icon">💝</span>
+            <span class="nav-text">Support Project</span>
+        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h2>Community-Powered Pet Recovery</h2>
+                    <p>Join thousands of volunteers using drone technology to reunite pets with their families across the UK.</p>
+                    
+                    <div class="quick-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">847</span>
+                            <span class="stat-label">Pets Reunited</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">4hrs</span>
+                            <span class="stat-label">Avg Find Time</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">1,200</span>
+                            <span class="stat-label">Active Volunteers</span>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn-primary" onclick="showSection('report')">
+                            📋 Report Lost Pet
+                        </button>
+                        <button class="btn-secondary" onclick="showSection('alerts')">
+                            🔔 View Local Alerts
+                        </button>
+                    </div>
+                </div>
+
+                <div class="location-status">
+                    <div class="location-info">
+                        <span class="location-icon">📍</span>
+                        <span class="location-text" id="userLocation">Getting your location...</span>
+                    </div>
+                    <div class="coverage-status">
+                        <span class="status-indicator active"></span>
+                        <span>Drone coverage active in your area</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Report Lost Pet Section -->
+        <section id="report" class="section">
+            <div class="section-header">
+                <h2>Report Lost Pet</h2>
+                <p>Provide detailed information to help our drone teams and community volunteers find your pet quickly.</p>
+            </div>
+
+            <form class="report-form" id="reportForm">
+                <!-- Pet Basic Information -->
+                <div class="form-group">
+                    <h3>Pet Information</h3>
+                    
+                    <div class="input-group">
+                        <label for="petName">Pet's Name</label>
+                        <input type="text" id="petName" name="petName" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="petType">Pet Type</label>
+                        <select id="petType" name="petType" required>
+                            <option value="">Select pet type</option>
+                            <option value="dog">Dog</option>
+                            <option value="cat">Cat</option>
+                            <option value="rabbit">Rabbit</option>
+                            <option value="bird">Bird</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="petBreed">Breed</label>
+                            <input type="text" id="petBreed" name="petBreed">
+                        </div>
+                        <div class="input-group">
+                            <label for="petAge">Age</label>
+                            <input type="text" id="petAge" name="petAge" placeholder="e.g. 3 years">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="petDescription">Description (color, size, distinctive features)</label>
+                        <textarea id="petDescription" name="petDescription" rows="3" required></textarea>
+                    </div>
+                </div>
+
+                <!-- Location Information -->
+                <div class="form-group">
+                    <h3>Last Known Location</h3>
+                    
+                    <div class="input-group">
+                        <label for="lostDate">Date Lost</label>
+                        <input type="date" id="lostDate" name="lostDate" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="lostTime">Approximate Time</label>
+                        <input type="time" id="lostTime" name="lostTime">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="lostLocation">Last Known Address/Location</label>
+                        <input type="text" id="lostLocation" name="lostLocation" placeholder="Street address or landmark" required>
+                        <button type="button" class="location-btn" onclick="getCurrentLocation()">
+                            📍 Use Current Location
+                        </button>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="lastSpotted">Last Spotted Information (if different)</label>
+                        <textarea id="lastSpotted" name="lastSpotted" rows="2" placeholder="When and where was your pet last seen by someone?"></textarea>
+                    </div>
+                </div>
+
+                <!-- Media Upload -->
+                <div class="form-group">
+                    <h3>Photos & Videos</h3>
+                    <p class="form-hint">Upload clear photos and videos to help with digital recognition</p>
+                    
+                    <div class="media-upload">
+                        <input type="file" id="petPhotos" name="petPhotos" multiple accept="image/*,video/*" style="display: none;">
+                        <button type="button" class="upload-btn" onclick="document.getElementById('petPhotos').click()">
+                            📷 Add Photos/Videos
+                        </button>
+                        <div class="upload-preview" id="uploadPreview"></div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="form-group">
+                    <h3>Contact Information</h3>
+                    
+                    <div class="input-group">
+                        <label for="ownerName">Your Name</label>
+                        <input type="text" id="ownerName" name="ownerName" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="ownerPhone">Phone Number</label>
+                        <input type="tel" id="ownerPhone" name="ownerPhone" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="ownerEmail">Email Address</label>
+                        <input type="email" id="ownerEmail" name="ownerEmail">
+                    </div>
+                </div>
+
+                <!-- Emergency Options -->
+                <div class="form-group">
+                    <h3>Response Priority</h3>
+                    
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="emergencyCase" name="emergencyCase">
+                        <span class="checkmark"></span>
+                        Emergency case (medical conditions, extreme weather, dangerous area)
+                    </label>
+
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="allowAlerts" name="allowAlerts" checked>
+                        <span class="checkmark"></span>
+                        Send alerts to community volunteers in my area
+                    </label>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    🚨 Submit Missing Pet Report
+                </button>
+            </form>
+        </section>
+
+        <!-- Local Alerts Section -->
+        <section id="alerts" class="section">
+            <div class="section-header">
+                <h2>Local Pet Alerts</h2>
+                <p>Missing pets in your area (within 1 mile radius)</p>
+                <div class="alert-filters">
+                    <button class="filter-btn active" data-filter="all">All Pets</button>
+                    <button class="filter-btn" data-filter="dogs">Dogs</button>
+                    <button class="filter-btn" data-filter="cats">Cats</button>
+                    <button class="filter-btn" data-filter="emergency">Emergency</button>
+                </div>
+            </div>
+
+            <div class="alerts-list" id="alertsList">
+                <!-- Sample Alert Cards -->
+                <div class="alert-card emergency" data-type="dogs">
+                    <div class="alert-header">
+                        <div class="pet-info">
+                            <h3>Max - Golden Retriever</h3>
+                            <span class="alert-badge emergency">Emergency</span>
+                        </div>
+                        <div class="alert-time">2 hours ago</div>
+                    </div>
+                    <div class="alert-content">
+                        <div class="pet-image">
+                            <div class="image-placeholder">🐕</div>
+                        </div>
+                        <div class="alert-details">
+                            <p><strong>Last seen:</strong> Victoria Park, 0.3 miles away</p>
+                            <p><strong>Description:</strong> Large golden retriever, blue collar, responds to "Max"</p>
+                            <p class="emergency-note">⚠️ Requires daily medication</p>
+                        </div>
+                    </div>
+                    <div class="alert-actions">
+                        <button class="btn-spot" onclick="reportSpotting('max-001')">
+                            📍 I Spotted This Pet
+                        </button>
+                        <button class="btn-info" onclick="viewDetails('max-001')">
+                            ℹ️ More Info
+                        </button>
+                    </div>
+                </div>
+
+                <div class="alert-card" data-type="cats">
+                    <div class="alert-header">
+                        <div class="pet-info">
+                            <h3>Luna - Black Cat</h3>
+                            <span class="alert-badge">Missing</span>
+                        </div>
+                        <div class="alert-time">5 hours ago</div>
+                    </div>
+                    <div class="alert-content">
+                        <div class="pet-image">
+                            <div class="image-placeholder">🐈‍⬛</div>
+                        </div>
+                        <div class="alert-details">
+                            <p><strong>Last seen:</strong> Regent Street, 0.7 miles away</p>
+                            <p><strong>Description:</strong> Small black cat, white chest patch, very shy</p>
+                        </div>
+                    </div>
+                    <div class="alert-actions">
+                        <button class="btn-spot" onclick="reportSpotting('luna-002')">
+                            📍 I Spotted This Pet
+                        </button>
+                        <button class="btn-info" onclick="viewDetails('luna-002')">
+                            ℹ️ More Info
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Spot a Pet Section -->
+        <section id="spot" class="section">
+            <div class="section-header">
+                <h2>Report Pet Spotting</h2>
+                <p>Help reunite pets with their families by reporting sightings</p>
+            </div>
+
+            <form class="spot-form" id="spotForm">
+                <div class="form-group">
+                    <h3>Which pet did you spot?</h3>
+                    <div class="pet-selector" id="petSelector">
+                        <div class="pet-option" data-pet="max-001">
+                            <div class="pet-preview">
+                                <span class="pet-emoji">🐕</span>
+                                <div class="pet-details">
+                                    <strong>Max - Golden Retriever</strong>
+                                    <span>Missing 2 hours</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pet-option" data-pet="luna-002">
+                            <div class="pet-preview">
+                                <span class="pet-emoji">🐈‍⬛</span>
+                                <div class="pet-details">
+                                    <strong>Luna - Black Cat</strong>
+                                    <span>Missing 5 hours</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pet-option" data-pet="other">
+                            <div class="pet-preview">
+                                <span class="pet-emoji">❓</span>
+                                <div class="pet-details">
+                                    <strong>Different Pet</strong>
+                                    <span>Not listed above</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3>Spotting Location</h3>
+                    
+                    <div class="input-group">
+                        <label for="spottingAddress">Current Address/Location</label>
+                        <input type="text" id="spottingAddress" name="spottingAddress" required>
+                        <button type="button" class="location-btn" onclick="getSpottingLocation()">
+                            📍 Use My Current Location
+                        </button>
+                    </div>
+
+                    <div class="gps-coordinates" id="gpsCoordinates" style="display: none;">
+                        <p><strong>GPS Coordinates:</strong> <span id="coordinates"></span></p>
+                        <p class="gps-note">✅ Exact location captured for drone deployment</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3>Spotting Details</h3>
+                    
+                    <div class="input-group">
+                        <label for="spottingTime">When did you see the pet?</label>
+                        <select id="spottingTime" name="spottingTime" required>
+                            <option value="now">Right now</option>
+                            <option value="minutes">A few minutes ago</option>
+                            <option value="hour">About an hour ago</option>
+                            <option value="hours">A few hours ago</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="petBehavior">Pet's behavior and condition</label>
+                        <textarea id="petBehavior" name="petBehavior" rows="3" placeholder="Describe how the pet looked and was behaving..."></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="petDirection">Direction the pet was heading</label>
+                        <select id="petDirection" name="petDirection">
+                            <option value="">Unknown</option>
+                            <option value="north">North</option>
+                            <option value="south">South</option>
+                            <option value="east">East</option>
+                            <option value="west">West</option>
+                            <option value="stationary">Staying in one place</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3>Evidence</h3>
+                    <p class="form-hint">Photos and videos help confirm the sighting</p>
+                    
+                    <div class="media-upload">
+                        <input type="file" id="spottingMedia" name="spottingMedia" multiple accept="image/*,video/*" style="display: none;">
+                        <button type="button" class="upload-btn" onclick="document.getElementById('spottingMedia').click()">
+                            📷 Add Photos/Videos of Spotting
+                        </button>
+                        <div class="upload-preview" id="spottingPreview"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <h3>Your Contact Information</h3>
+                    
+                    <div class="input-group">
+                        <label for="spotterName">Your Name</label>
+                        <input type="text" id="spotterName" name="spotterName" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="spotterPhone">Phone Number</label>
+                        <input type="tel" id="spotterPhone" name="spotterPhone" required>
+                    </div>
+
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="followUp" name="followUp" checked>
+                        <span class="checkmark"></span>
+                        Allow follow-up contact for additional information
+                    </label>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    📍 Submit Pet Spotting Report
+                </button>
+            </form>
+        </section>
+
+        <!-- Donation Section -->
+        <section id="donate" class="section">
+            <div class="section-header">
+                <h2>Support the Project</h2>
+                <p>Help keep our community-driven drone project running through voluntary contributions</p>
+            </div>
+
+            <div class="donate-content">
+                <div class="project-info">
+                    <div class="funding-note">
+                        <span class="gov-badge">🏛️ Government Funded</span>
+                        <p>This project is primarily funded by government grants, but voluntary community contributions help us expand our capabilities and reach more areas.</p>
+                    </div>
+
+                    <div class="impact-stats">
+                        <h3>Your Impact</h3>
+                        <div class="impact-item">
+                            <span class="impact-icon">🚁</span>
+                            <div class="impact-text">
+                                <strong>£25</strong>
+                                <span>1 hour of drone flight time</span>
+                            </div>
+                        </div>
+                        <div class="impact-item">
+                            <span class="impact-icon">📡</span>
+                            <div class="impact-text">
+                                <strong>£50</strong>
+                                <span>Community alert system maintenance</span>
+                            </div>
+                        </div>
+                        <div class="impact-item">
+                            <span class="impact-icon">📱</span>
+                            <div class="impact-text">
+                                <strong>£100</strong>
+                                <span>Mobile app development & hosting</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="donation-form">
+                    <h3>Make a Voluntary Contribution</h3>
+                    
+                    <div class="amount-selector">
+                        <button class="amount-btn" data-amount="10">£10</button>
+                        <button class="amount-btn" data-amount="25">£25</button>
+                        <button class="amount-btn active" data-amount="50">£50</button>
+                        <button class="amount-btn" data-amount="100">£100</button>
+                    </div>
+
+                    <div class="custom-amount">
+                        <input type="number" placeholder="Custom amount (£)" min="1" id="customAmount">
+                    </div>
+
+                    <form id="donationForm">
+                        <div class="input-group">
+                            <label for="donorName">Name (optional)</label>
+                            <input type="text" id="donorName" name="donorName">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="donorEmail">Email (for receipt)</label>
+                            <input type="email" id="donorEmail" name="donorEmail">
+                        </div>
+
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="monthlyDonation" name="monthlyDonation">
+                            <span class="checkmark"></span>
+                            Make this a monthly contribution
+                        </label>
+
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="anonymous" name="anonymous">
+                            <span class="checkmark"></span>
+                            Keep my donation anonymous
+                        </label>
+
+                        <button type="submit" class="donate-btn">
+                            💝 Contribute £50
+                        </button>
+                    </form>
+
+                    <div class="payment-security">
+                        <p>🔒 Secure payment processing • All donations are voluntary • Tax receipts available</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Emergency Contact Bar -->
+    <div class="emergency-bar">
+        <div class="emergency-content">
+            <span class="emergency-icon">🚨</span>
+            <div class="emergency-text">
+                <strong>Emergency Hotline</strong>
+                <span>0800-TAILSCOUT</span>
+            </div>
+            <a href="tel:0800-TAILSCOUT" class="emergency-call">Call Now</a>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div class="modal-icon">✅</div>
+            <h3 id="modalTitle">Report Submitted Successfully!</h3>
+            <p id="modalMessage">Your missing pet report has been submitted. Our drone teams and community volunteers have been notified.</p>
+            <button class="modal-btn" onclick="closeModal()">Continue</button>
+        </div>
+    </div>
+
+    <script src="mobile-app.js"></script>
+</body>
+</html>

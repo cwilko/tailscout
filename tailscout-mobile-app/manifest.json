@@ -1,0 +1,132 @@
+{
+  "name": "TailScout Mobile - Community Pet Search",
+  "short_name": "TailScout",
+  "description": "Government-funded community drone project for finding lost pets. Report missing pets and help others find their beloved companions.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4ecdc4",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["utilities", "lifestyle"],
+  "lang": "en-GB",
+  "scope": "/",
+  "screenshots": [
+    {
+      "src": "screenshot-mobile-1.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Report missing pets with detailed information"
+    },
+    {
+      "src": "screenshot-mobile-2.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "View local pet alerts in your area"
+    },
+    {
+      "src": "screenshot-mobile-3.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Report pet sightings with GPS location"
+    }
+  ],
+  "features": [
+    "Cross Platform",
+    "fast",
+    "simple"
+  ],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "shortcuts": [
+    {
+      "name": "Report Lost Pet",
+      "short_name": "Report Pet",
+      "description": "Quickly report a missing pet",
+      "url": "/#report",
+      "icons": [
+        {
+          "src": "icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Local Alerts",
+      "short_name": "Alerts",
+      "description": "View missing pets in your area",
+      "url": "/#alerts",
+      "icons": [
+        {
+          "src": "icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Emergency Call",
+      "short_name": "Emergency",
+      "description": "Call emergency pet rescue hotline",
+      "url": "tel:0800-TAILSCOUT",
+      "icons": [
+        {
+          "src": "icon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}
