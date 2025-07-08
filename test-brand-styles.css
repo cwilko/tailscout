@@ -72,7 +72,12 @@ body {
 .logo-image {
     height: 50px;
     width: auto;
-    filter: drop-shadow(0 0 10px rgba(252, 191, 5, 0.5));
+    filter: 
+        hue-rotate(200deg) 
+        saturate(1.5) 
+        brightness(1.1) 
+        contrast(1.2)
+        drop-shadow(0 0 10px rgba(255, 107, 107, 0.5));
     animation: logoGlow 3s ease-in-out infinite alternate;
     transition: all 0.3s ease;
 }
@@ -140,8 +145,22 @@ body {
 }
 
 @keyframes logoGlow {
-    0% { filter: drop-shadow(0 0 10px rgba(252, 191, 5, 0.5)); }
-    100% { filter: drop-shadow(0 0 20px rgba(61, 132, 191, 0.5)); }
+    0% { 
+        filter: 
+            hue-rotate(200deg) 
+            saturate(1.5) 
+            brightness(1.1) 
+            contrast(1.2)
+            drop-shadow(0 0 10px rgba(255, 107, 107, 0.5)); 
+    }
+    100% { 
+        filter: 
+            hue-rotate(200deg) 
+            saturate(1.5) 
+            brightness(1.1) 
+            contrast(1.2)
+            drop-shadow(0 0 20px rgba(78, 205, 196, 0.5)); 
+    }
 }
 
 /* Responsive logo adjustments */

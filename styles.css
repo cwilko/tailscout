@@ -35,15 +35,38 @@ body {
     align-items: center;
 }
 
-.logo h1 {
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo-image {
+    height: 50px !important;
+    width: auto !important;
+    max-height: 50px;
+    max-width: 100px;
+    filter: 
+        hue-rotate(200deg) 
+        saturate(1.5) 
+        brightness(1.1) 
+        contrast(1.2)
+        drop-shadow(0 0 10px rgba(255, 107, 107, 0.5));
+    animation: logoGlow 3s ease-in-out infinite alternate;
+    transition: all 0.3s ease;
+}
+
+.logo-image:hover {
+    transform: scale(1.05);
+}
+
+.logo-text h1 {
     font-size: 1.8rem;
     font-weight: 800;
     background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 10px rgba(78, 205, 196, 0.5));
-    animation: logoGlow 3s ease-in-out infinite alternate;
     margin-bottom: 0.25rem;
 }
 
@@ -96,8 +119,22 @@ body {
 }
 
 @keyframes logoGlow {
-    0% { filter: drop-shadow(0 0 10px rgba(78, 205, 196, 0.5)); }
-    100% { filter: drop-shadow(0 0 20px rgba(255, 107, 107, 0.5)); }
+    0% { 
+        filter: 
+            hue-rotate(200deg) 
+            saturate(1.5) 
+            brightness(1.1) 
+            contrast(1.2)
+            drop-shadow(0 0 10px rgba(255, 107, 107, 0.5)); 
+    }
+    100% { 
+        filter: 
+            hue-rotate(200deg) 
+            saturate(1.5) 
+            brightness(1.1) 
+            contrast(1.2)
+            drop-shadow(0 0 20px rgba(78, 205, 196, 0.5)); 
+    }
 }
 
 .nav-links {
@@ -1032,6 +1069,23 @@ body {
     padding-top: 2rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     color: #b8c5d6;
+}
+
+/* Responsive logo adjustments */
+@media (max-width: 768px) {
+    .logo {
+        gap: 0.75rem;
+    }
+    
+    .logo-image {
+        height: 40px !important;
+        max-height: 40px;
+        max-width: 80px;
+    }
+    
+    .logo-text h1 {
+        font-size: 1.4rem;
+    }
 }
 
 /* Responsive Design */
