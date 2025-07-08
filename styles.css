@@ -42,23 +42,10 @@ body {
 }
 
 .logo-image {
-    height: 50px !important;
-    width: auto !important;
-    max-height: 50px;
-    max-width: 100px;
-    filter: 
-        hue-rotate(200deg) 
-        saturate(1.5) 
-        brightness(1.1) 
-        contrast(1.2)
-        drop-shadow(0 0 10px rgba(255, 107, 107, 0.5));
-    animation: logoGlow 3s ease-in-out infinite alternate;
-    transition: all 0.3s ease;
+    height: 50px;
+    width: auto;
 }
 
-.logo-image:hover {
-    transform: scale(1.05);
-}
 
 .logo-text h1 {
     font-size: 1.8rem;
@@ -119,22 +106,8 @@ body {
 }
 
 @keyframes logoGlow {
-    0% { 
-        filter: 
-            hue-rotate(200deg) 
-            saturate(1.5) 
-            brightness(1.1) 
-            contrast(1.2)
-            drop-shadow(0 0 10px rgba(255, 107, 107, 0.5)); 
-    }
-    100% { 
-        filter: 
-            hue-rotate(200deg) 
-            saturate(1.5) 
-            brightness(1.1) 
-            contrast(1.2)
-            drop-shadow(0 0 20px rgba(78, 205, 196, 0.5)); 
-    }
+    0% { filter: drop-shadow(0 0 10px rgba(78, 205, 196, 0.5)); }
+    100% { filter: drop-shadow(0 0 20px rgba(255, 107, 107, 0.5)); }
 }
 
 .nav-links {
@@ -1078,9 +1051,7 @@ body {
     }
     
     .logo-image {
-        height: 40px !important;
-        max-height: 40px;
-        max-width: 80px;
+        height: 40px;
     }
     
     .logo-text h1 {
