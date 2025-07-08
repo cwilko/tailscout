@@ -16,6 +16,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Header scroll effect
     initHeaderScrollEffect();
+    
+    // Initialize carousel
+    initCarousel();
+    
+    // Initialize donation form
+    initDonationForm();
 });
 
 // Create floating background elements
@@ -452,4 +458,232 @@ document.addEventListener('DOMContentLoaded', function() {
         
         return true;
     }
+});
+
+// Success Stories Carousel
+function initCarousel() {
+    const track = document.getElementById('carouselTrack');
+    const slides = document.querySelectorAll('.story-slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const indicators = document.querySelectorAll('.indicator');
+    
+    if (!track || slides.length === 0) return;
+    
+    let currentSlide = 0;
+    const totalSlides = slides.length;
+    
+    // Auto-play carousel
+    let autoPlayInterval;
+    
+    function showSlide(index) {
+        // Remove active class from all slides and indicators
+        slides.forEach(slide => slide.classList.remove('active'));
+        indicators.forEach(indicator => indicator.classList.remove('active'));
+        
+        // Add active class to current slide and indicator
+        slides[index].classList.add('active');
+        indicators[index].classList.add('active');
+        
+        // Move track
+        track.style.transform = `translateX(-${index * 100}%)`;
+        currentSlide = index;
+    }
+    
+    function nextSlide() {
+        const next = (currentSlide + 1) % totalSlides;
+        showSlide(next);
+    }
+    
+    function prevSlide() {
+        const prev = (currentSlide - 1 + totalSlides) % totalSlides;
+        showSlide(prev);
+    }
+    
+    function startAutoPlay() {
+        autoPlayInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+    }
+    
+    function stopAutoPlay() {
+        clearInterval(autoPlayInterval);
+    }
+    
+    // Event listeners
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            stopAutoPlay();
+            setTimeout(startAutoPlay, 10000); // Restart auto-play after 10 seconds
+        });
+    }
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            stopAutoPlay();
+            setTimeout(startAutoPlay, 10000);
+        });
+    }
+    
+    // Indicator clicks
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => {
+            showSlide(index);
+            stopAutoPlay();
+            setTimeout(startAutoPlay, 10000);
+        });
+    });
+    
+    // Pause on hover
+    const carouselContainer = document.querySelector('.carousel-container');
+    if (carouselContainer) {
+        carouselContainer.addEventListener('mouseenter', stopAutoPlay);
+        carouselContainer.addEventListener('mouseleave', startAutoPlay);
+    }
+    
+    // Touch/swipe support for mobile
+    let startX = 0;
+    let endX = 0;
+    
+    track.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+    });
+    
+    track.addEventListener('touchend', (e) => {
+        endX = e.changedTouches[0].clientX;
+        const difference = startX - endX;
+        
+        if (Math.abs(difference) > 50) { // Minimum swipe distance
+            if (difference > 0) {
+                nextSlide();
+            } else {
+                prevSlide();
+            }
+            stopAutoPlay();
+            setTimeout(startAutoPlay, 10000);
+        }
+    });
+    
+    // Start auto-play
+    startAutoPlay();
+    
+    // Initialize first slide
+    showSlide(0);
+}
+
+// Donation Form Functionality
+function initDonationForm() {
+    const amountBtns = document.querySelectorAll('.amount-btn');
+    const customAmount = document.querySelector('.custom-amount');
+    const donateBtn = document.querySelector('.donate-submit-btn');
+    const donateForm = document.getElementById('donateForm');
+    
+    let selectedAmount = 100; // Default amount
+    
+    // Amount button selection
+    amountBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active class from all buttons
+            amountBtns.forEach(b => b.classList.remove('active'));
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Update selected amount
+            selectedAmount = parseInt(this.getAttribute('data-amount'));
+            
+            // Clear custom amount
+            if (customAmount) {
+                customAmount.value = '';
+            }
+            
+            // Update donate button text
+            updateDonateButtonText();
+        });
+    });
+    
+    // Custom amount input
+    if (customAmount) {
+        customAmount.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            if (value && value > 0) {
+                // Remove active class from amount buttons
+                amountBtns.forEach(btn => btn.classList.remove('active'));
+                
+                // Update selected amount
+                selectedAmount = value;
+                updateDonateButtonText();
+            }
+        });
+    }
+    
+    function updateDonateButtonText() {
+        if (donateBtn) {
+            donateBtn.textContent = `💝 Donate $${selectedAmount}`;
+        }
+    }
+    
+    // Form submission
+    if (donateForm) {
+        donateForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(donateForm);
+            const donationType = formData.get('donation-type') || 'one-time';
+            const email = formData.get('email');
+            const name = formData.get('name');
+            const taxReceipt = document.getElementById('taxReceipt').checked;
+            
+            // Validate required fields
+            if (!donationType || !email || !name) {
+                showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            // Simulate donation processing
+            donateBtn.textContent = 'Processing...';
+            donateBtn.disabled = true;
+            
+            setTimeout(() => {
+                // Show success message
+                const message = taxReceipt ? 
+                    `Thank you for your $${selectedAmount} donation! A tax receipt will be sent to ${email}.` :
+                    `Thank you for your $${selectedAmount} donation! Your support helps us bring more pets home safely.`;
+                
+                showNotification(message, 'success');
+                
+                // Reset form
+                donateForm.reset();
+                
+                // Reset button
+                donateBtn.textContent = `💝 Donate $${selectedAmount}`;
+                donateBtn.disabled = false;
+                
+                // Reset amount selection
+                amountBtns.forEach(btn => btn.classList.remove('active'));
+                document.querySelector('[data-amount="100"]').classList.add('active');
+                selectedAmount = 100;
+                updateDonateButtonText();
+                
+            }, 2000);
+        });
+    }
+    
+    // Initialize donate button text
+    updateDonateButtonText();
+}
+
+// Enhanced donation button animations
+document.addEventListener('DOMContentLoaded', function() {
+    const donateButtons = document.querySelectorAll('.donate-btn, .donate-submit-btn');
+    
+    donateButtons.forEach(btn => {
+        btn.addEventListener('mouseenter', function() {
+            this.style.animation = 'none';
+            setTimeout(() => {
+                this.style.animation = 'pulse 0.6s ease-in-out';
+            }, 10);
+        });
+    });
 });
