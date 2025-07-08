@@ -1,55 +1,137 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Dark mode toggle functionality
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const body = document.body;
+    // Create floating elements
+    createFloatingElements();
     
-    // Check for saved theme preference or default to light mode
-    const currentTheme = localStorage.getItem('theme') || 'light';
-    body.setAttribute('data-theme', currentTheme);
+    // Initialize animations
+    initScrollAnimations();
     
-    // Update toggle button based on current theme
-    updateToggleButton(currentTheme);
+    // Initialize stats counter
+    initStatsCounter();
     
-    darkModeToggle.addEventListener('click', function() {
-        const currentTheme = body.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    // Smooth scrolling for navigation
+    initSmoothScrolling();
+    
+    // Form handling
+    initFormHandling();
+    
+    // Header scroll effect
+    initHeaderScrollEffect();
+});
+
+// Create floating background elements
+function createFloatingElements() {
+    const floatingContainer = document.querySelector('.floating-elements');
+    if (!floatingContainer) return;
+    
+    const elementCount = 15;
+    
+    for (let i = 0; i < elementCount; i++) {
+        const element = document.createElement('div');
+        element.className = 'floating-element';
         
-        body.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateToggleButton(newTheme);
-    });
+        // Random size between 20px and 80px
+        const size = Math.random() * 60 + 20;
+        element.style.width = size + 'px';
+        element.style.height = size + 'px';
+        
+        // Random position
+        element.style.left = Math.random() * 100 + '%';
+        element.style.top = Math.random() * 100 + '%';
+        
+        // Random animation delay and duration
+        element.style.animationDelay = Math.random() * 6 + 's';
+        element.style.animationDuration = (Math.random() * 4 + 4) + 's';
+        
+        // Random opacity
+        element.style.opacity = Math.random() * 0.5 + 0.1;
+        
+        floatingContainer.appendChild(element);
+    }
+}
+
+// Initialize scroll-triggered animations
+function initScrollAnimations() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
     
-    function updateToggleButton(theme) {
-        darkModeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, observerOptions);
+    
+    // Observe all elements that should animate on scroll
+    const animateElements = document.querySelectorAll('.service-card, .team-member, .stat-card');
+    animateElements.forEach(el => {
+        el.classList.add('fade-in');
+        observer.observe(el);
+    });
+}
+
+// Initialize statistics counter animation
+function initStatsCounter() {
+    const statNumbers = document.querySelectorAll('.stat-number[data-target]');
+    let hasAnimated = false;
+    
+    const statsObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !hasAnimated) {
+                hasAnimated = true;
+                animateStats();
+                statsObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    const statsSection = document.querySelector('.stats');
+    if (statsSection) {
+        statsObserver.observe(statsSection);
     }
     
-    // Smooth scrolling for navigation links
+    function animateStats() {
+        statNumbers.forEach(stat => {
+            const target = parseInt(stat.getAttribute('data-target'));
+            const duration = 2000; // 2 seconds
+            const increment = target / (duration / 16); // 60fps
+            let current = 0;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                stat.textContent = Math.floor(current);
+            }, 16);
+        });
+    }
+}
+
+// Initialize smooth scrolling
+function initSmoothScrolling() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
+                const headerHeight = document.querySelector('.header').offsetHeight;
+                const targetPosition = target.offsetTop - headerHeight;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
                 });
             }
         });
     });
-    
-    // Header background change on scroll
-    const header = document.querySelector('.header');
-    window.addEventListener('scroll', function() {
-        if (window.scrollY > 100) {
-            header.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-            header.style.backdropFilter = 'blur(10px)';
-        } else {
-            header.style.backgroundColor = 'var(--bg-primary)';
-            header.style.backdropFilter = 'none';
-        }
-    });
-    
-    // Form handling for emergency report
+}
+
+// Initialize form handling
+function initFormHandling() {
     const reportForm = document.getElementById('reportForm');
     if (reportForm) {
         reportForm.addEventListener('submit', function(e) {
@@ -62,282 +144,312 @@ document.addEventListener('DOMContentLoaded', function() {
                 formObject[key] = value;
             });
             
-            // Show success message
+            // Show success notification
             showNotification('Emergency report submitted successfully! We will contact you immediately.', 'success');
             
             // Reset form
             reportForm.reset();
-        });
-    }
-    
-    // Notification system
-    function showNotification(message, type = 'info') {
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        notification.innerHTML = `
-            <div class="notification-content">
-                <span class="notification-icon">${type === 'success' ? '✅' : '📢'}</span>
-                <span class="notification-message">${message}</span>
-                <button class="notification-close">&times;</button>
-            </div>
-        `;
-        
-        // Add styles
-        notification.style.cssText = `
-            position: fixed;
-            top: 100px;
-            right: 20px;
-            background: ${type === 'success' ? 'var(--success-color)' : 'var(--primary-color)'};
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 0.5rem;
-            box-shadow: var(--shadow-lg);
-            z-index: 1001;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            max-width: 400px;
-        `;
-        
-        document.body.appendChild(notification);
-        
-        // Animate in
-        setTimeout(() => {
-            notification.style.transform = 'translateX(0)';
-        }, 100);
-        
-        // Close functionality
-        const closeBtn = notification.querySelector('.notification-close');
-        closeBtn.addEventListener('click', function() {
-            notification.style.transform = 'translateX(100%)';
-            setTimeout(() => {
-                notification.remove();
-            }, 300);
-        });
-        
-        // Auto close after 5 seconds
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.style.transform = 'translateX(100%)';
+            
+            // Add visual feedback to submit button
+            const submitBtn = reportForm.querySelector('.submit-btn');
+            if (submitBtn) {
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = '✓ Report Submitted';
+                submitBtn.style.background = 'linear-gradient(45deg, #059669, #10b981)';
+                
                 setTimeout(() => {
-                    notification.remove();
-                }, 300);
+                    submitBtn.textContent = originalText;
+                    submitBtn.style.background = 'linear-gradient(45deg, #ff6b6b, #4ecdc4)';
+                }, 3000);
             }
-        }, 5000);
+        });
+    }
+}
+
+// Initialize header scroll effect
+function initHeaderScrollEffect() {
+    const header = document.querySelector('.header');
+    
+    window.addEventListener('scroll', function() {
+        const scrolled = window.scrollY;
+        
+        if (scrolled > 100) {
+            header.style.background = 'rgba(15, 15, 35, 0.95)';
+            header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.3)';
+        } else {
+            header.style.background = 'rgba(15, 15, 35, 0.9)';
+            header.style.boxShadow = 'none';
+        }
+    });
+}
+
+// Notification system
+function showNotification(message, type = 'info') {
+    // Remove existing notification if any
+    const existingNotification = document.querySelector('.notification');
+    if (existingNotification) {
+        existingNotification.remove();
     }
     
-    // Mobile menu toggle
-    const navMenu = document.querySelector('.nav-menu');
-    const menuToggle = document.createElement('button');
-    menuToggle.className = 'menu-toggle';
-    menuToggle.innerHTML = '☰';
-    menuToggle.style.cssText = `
-        display: none;
-        background: none;
-        border: none;
-        font-size: 1.5rem;
-        cursor: pointer;
-        color: var(--text-primary);
-        padding: 0.5rem;
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    
+    const iconMap = {
+        success: '✅',
+        error: '❌',
+        warning: '⚠️',
+        info: 'ℹ️'
+    };
+    
+    const colorMap = {
+        success: 'linear-gradient(45deg, #059669, #10b981)',
+        error: 'linear-gradient(45deg, #dc2626, #ef4444)',
+        warning: 'linear-gradient(45deg, #d97706, #f59e0b)',
+        info: 'linear-gradient(45deg, #2563eb, #3b82f6)'
+    };
+    
+    notification.innerHTML = `
+        <div class="notification-content">
+            <span class="notification-icon">${iconMap[type] || iconMap.info}</span>
+            <span class="notification-message">${message}</span>
+            <button class="notification-close">&times;</button>
+        </div>
     `;
     
-    // Add mobile menu styles
+    // Style the notification
+    notification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: ${colorMap[type] || colorMap.info};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        z-index: 1001;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        max-width: 400px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    `;
+    
+    // Style notification content
     const style = document.createElement('style');
     style.textContent = `
-        @media (max-width: 768px) {
-            .menu-toggle {
-                display: block !important;
-            }
-            
-            .nav-menu {
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: var(--bg-primary);
-                flex-direction: column;
-                padding: 1rem;
-                box-shadow: var(--shadow-md);
-                transform: translateY(-100%);
-                opacity: 0;
-                visibility: hidden;
-                transition: all 0.3s ease;
-            }
-            
-            .nav-menu.active {
-                transform: translateY(0);
-                opacity: 1;
-                visibility: visible;
-            }
-        }
-        
         .notification-content {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
+        }
+        
+        .notification-icon {
+            font-size: 1.2rem;
+        }
+        
+        .notification-message {
+            flex: 1;
+            font-weight: 500;
         }
         
         .notification-close {
             background: none;
             border: none;
             color: white;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             cursor: pointer;
-            margin-left: auto;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+        
+        .notification-close:hover {
+            background-color: rgba(255, 255, 255, 0.2);
         }
     `;
-    document.head.appendChild(style);
     
-    // Insert menu toggle into nav
-    const navContainer = document.querySelector('.nav-container');
-    navContainer.insertBefore(menuToggle, navContainer.children[1]);
+    if (!document.querySelector('#notification-styles')) {
+        style.id = 'notification-styles';
+        document.head.appendChild(style);
+    }
     
-    // Mobile menu toggle functionality
-    menuToggle.addEventListener('click', function() {
-        navMenu.classList.toggle('active');
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // Close functionality
+    const closeBtn = notification.querySelector('.notification-close');
+    closeBtn.addEventListener('click', function() {
+        closeNotification(notification);
     });
     
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', function(e) {
-        if (!navContainer.contains(e.target)) {
-            navMenu.classList.remove('active');
+    // Auto close after 5 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            closeNotification(notification);
         }
-    });
+    }, 5000);
     
-    // Intersection Observer for animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
+    function closeNotification(notif) {
+        notif.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            if (notif.parentNode) {
+                notif.remove();
             }
-        });
-    }, observerOptions);
-    
-    // Observe elements for scroll animations
-    document.querySelectorAll('.service-card, .story-card, .team-member').forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(20px)';
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(el);
-    });
-    
-    // Phone number click handling
-    document.querySelectorAll('a[href^="tel:"]').forEach(link => {
-        link.addEventListener('click', function(e) {
-            if (window.innerWidth > 768) {
-                e.preventDefault();
-                navigator.clipboard.writeText(this.textContent.replace(/[^\d-]/g, ''));
-                showNotification('Phone number copied to clipboard!', 'success');
-            }
-        });
-    });
-    
-    // Stats counter animation
-    function animateStats() {
-        const statsNumbers = document.querySelectorAll('.stat-number');
-        statsNumbers.forEach(stat => {
-            const target = stat.textContent;
-            const isPercentage = target.includes('%');
-            const number = parseInt(target.replace(/[^\d]/g, ''));
-            
-            if (isNaN(number)) return;
-            
-            let current = 0;
-            const increment = number / 50;
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= number) {
-                    current = number;
-                    clearInterval(timer);
-                }
-                stat.textContent = Math.floor(current) + (isPercentage ? '%' : target.includes('+') ? '+' : '');
-            }, 50);
-        });
+        }, 300);
     }
+}
+
+// Enhanced hover effects for service cards
+document.addEventListener('DOMContentLoaded', function() {
+    const serviceCards = document.querySelectorAll('.service-card');
     
-    // Trigger stats animation when hero section is visible
-    const heroObserver = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                animateStats();
-                heroObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.5 });
-    
-    const heroStats = document.querySelector('.hero-stats');
-    if (heroStats) {
-        heroObserver.observe(heroStats);
-    }
-    
-    // Emergency contact pulse effect
-    const emergencyBtns = document.querySelectorAll('.emergency-btn, .emergency-number');
-    emergencyBtns.forEach(btn => {
-        btn.addEventListener('mouseenter', function() {
-            this.style.animation = 'pulse 0.5s ease-in-out';
+    serviceCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            // Add a subtle glow effect
+            this.style.boxShadow = '0 20px 40px rgba(78, 205, 196, 0.2), 0 0 0 1px rgba(78, 205, 196, 0.1)';
         });
         
-        btn.addEventListener('animationend', function() {
-            this.style.animation = '';
+        card.addEventListener('mouseleave', function() {
+            this.style.boxShadow = '';
         });
-    });
-    
-    // Form validation
-    const inputs = document.querySelectorAll('input[required], textarea[required]');
-    inputs.forEach(input => {
-        input.addEventListener('blur', function() {
-            if (this.value.trim() === '') {
-                this.style.borderColor = 'var(--accent-color)';
-            } else {
-                this.style.borderColor = 'var(--success-color)';
-            }
-        });
-        
-        input.addEventListener('input', function() {
-            this.style.borderColor = 'var(--border-color)';
-        });
-    });
-    
-    // Preload critical images (placeholder for actual implementation)
-    const criticalImages = [
-        // Add actual image URLs here when available
-    ];
-    
-    criticalImages.forEach(src => {
-        const img = new Image();
-        img.src = src;
-    });
-    
-    // Performance optimization: lazy load non-critical content
-    const lazyElements = document.querySelectorAll('.story-card, .team-member');
-    const lazyObserver = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('loaded');
-                lazyObserver.unobserve(entry.target);
-            }
-        });
-    }, { rootMargin: '50px' });
-    
-    lazyElements.forEach(el => {
-        lazyObserver.observe(el);
     });
 });
 
-// Service Worker for offline functionality (basic implementation)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/sw.js')
-            .then(function(registration) {
-                console.log('ServiceWorker registration successful');
-            })
-            .catch(function(err) {
-                console.log('ServiceWorker registration failed');
-            });
+// Enhanced team member hover effects
+document.addEventListener('DOMContentLoaded', function() {
+    const teamMembers = document.querySelectorAll('.team-member');
+    
+    teamMembers.forEach(member => {
+        member.addEventListener('mouseenter', function() {
+            const memberImage = this.querySelector('.member-image');
+            if (memberImage) {
+                memberImage.style.transform = 'scale(1.1)';
+                memberImage.style.boxShadow = '0 0 20px rgba(78, 205, 196, 0.5)';
+            }
+        });
+        
+        member.addEventListener('mouseleave', function() {
+            const memberImage = this.querySelector('.member-image');
+            if (memberImage) {
+                memberImage.style.transform = 'scale(1)';
+                memberImage.style.boxShadow = '';
+            }
+        });
     });
+});
+
+// Emergency number click handling with enhanced feedback
+document.addEventListener('DOMContentLoaded', function() {
+    const emergencyNumbers = document.querySelectorAll('.emergency-number');
+    
+    emergencyNumbers.forEach(number => {
+        number.addEventListener('click', function(e) {
+            // For desktop users, show copy notification
+            if (window.innerWidth > 768 && navigator.clipboard) {
+                e.preventDefault();
+                const phoneNumber = this.textContent.replace(/[^\d-]/g, '');
+                navigator.clipboard.writeText(phoneNumber).then(() => {
+                    showNotification('Emergency number copied to clipboard!', 'success');
+                });
+            }
+            
+            // Add pulse effect
+            this.style.animation = 'none';
+            setTimeout(() => {
+                this.style.animation = 'pulse 0.6s ease-in-out';
+            }, 10);
+        });
+    });
+});
+
+// Add pulse animation for emergency elements
+const pulseStyle = document.createElement('style');
+pulseStyle.textContent = `
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+`;
+document.head.appendChild(pulseStyle);
+
+// Performance optimization: Lazy loading for non-critical animations
+function initLazyAnimations() {
+    const lazyElements = document.querySelectorAll('.service-card, .team-member, .stat-card');
+    
+    if ('IntersectionObserver' in window) {
+        const lazyObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('loaded');
+                    lazyObserver.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '50px' });
+        
+        lazyElements.forEach(el => {
+            lazyObserver.observe(el);
+        });
+    } else {
+        // Fallback for older browsers
+        lazyElements.forEach(el => {
+            el.classList.add('loaded');
+        });
+    }
 }
+
+// Initialize lazy animations
+document.addEventListener('DOMContentLoaded', initLazyAnimations);
+
+// Add keyboard navigation support
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        // Close any open notifications
+        const notifications = document.querySelectorAll('.notification');
+        notifications.forEach(notification => {
+            notification.querySelector('.notification-close').click();
+        });
+    }
+});
+
+// Enhanced form validation with real-time feedback
+document.addEventListener('DOMContentLoaded', function() {
+    const formInputs = document.querySelectorAll('#reportForm input, #reportForm textarea');
+    
+    formInputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            validateField(this);
+        });
+        
+        input.addEventListener('input', function() {
+            // Clear validation styles on input
+            this.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+            this.style.boxShadow = '';
+        });
+    });
+    
+    function validateField(field) {
+        const value = field.value.trim();
+        
+        if (field.hasAttribute('required') && value === '') {
+            field.style.borderColor = '#ff6b6b';
+            field.style.boxShadow = '0 0 10px rgba(255, 107, 107, 0.3)';
+            return false;
+        } else if (value !== '') {
+            field.style.borderColor = '#4ecdc4';
+            field.style.boxShadow = '0 0 10px rgba(78, 205, 196, 0.3)';
+            return true;
+        }
+        
+        return true;
+    }
+});
